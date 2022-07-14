@@ -104,21 +104,23 @@
                 </p>
                 <crossword-preview :model="crosswordModel"
                                    :solution="solutions[currentSolution]"></crossword-preview>
-                <div class="has-text-centered mt-2" v-if="solutions.length > 1">
-                    Possible other solutions: {{ solutions.length - 1 }}{{ solutions.length > 100 ? '+' : '' }}.
-                    <a @click="currentSolution = currentSolution + 1 >= solutions.length ? 0 : currentSolution + 1">&raquo;</a>
-                </div>
-                <div class="has-text-centered mt-2 has-text-success" v-else-if="solutions.length === 1">
-                    This is the only solution.
-                </div>
-                <div class="has-text-centered mt-2 has-text-danger" v-else-if="solutionCounter < 10000">
-                    No solution found.
-                </div>
-                <div class="has-text-centered mt-2 has-text-danger" v-else>
-                    Too complicated. Please add more words.
-                </div>
-                <div class="is-size-7 has-text-centered mt-1" v-if="solutionCounter > 0">
-                    iterations: {{ solutionCounter }}
+                <div class="has-text-centered mt-2" v-if="words.length > 0">
+                    <div v-if="solutions.length > 1">
+                        Possible other solutions: {{ solutions.length - 1 }}{{ solutions.length > 100 ? '+' : '' }}.
+                        <a @click="currentSolution = currentSolution + 1 >= solutions.length ? 0 : currentSolution + 1">&raquo;</a>
+                    </div>
+                    <div class="has-text-success" v-else-if="solutions.length === 1">
+                        This is the only solution.
+                    </div>
+                    <div class="has-text-danger" v-else-if="solutionCounter < 10000">
+                        No solution found.
+                    </div>
+                    <div class="has-text-danger" v-else>
+                        Too complicated. Please add more words.
+                    </div>
+                    <div class="is-size-7 has-text-centered mt-1" v-if="solutionCounter > 0">
+                        iterations: {{ solutionCounter }}
+                    </div>
                 </div>
                 <div class="container">
                     <form @submit.prevent="addWord()">
@@ -153,7 +155,7 @@
                         </div>
                         <div class="column">
                             <p class="mb-3">Number of words: {{words.length}} / {{ placesInCrossing.length }}</p>
-                            <p v-for="stat in wordsInCrossingStats(solutions[currentSolution].words)"
+                            <p v-for="stat in wordsInCrossingStats(solutions[currentSolution] ? solutions[currentSolution].words : [])"
                                :class="{'has-text-success': stat.words === stat.places, 'has-text-danger': stat.words > stat.places}">
                                 {{ stat.length }}-letter words: {{ stat.words }} / {{ stat.places }}
                             </p>
@@ -457,6 +459,9 @@
                 return stats;
             },
             lettersInCrossingStats(solution) {
+                if (!solution) {
+                    return [];
+                }
                 const letters = {};
                 solution.forEach(row => {
                     row.forEach(letter => {
