@@ -134,16 +134,15 @@
                         <div class="column">
                             <div class="panel">
                                 <div class="panel-block" v-for="word in words" :key="word.word">
-                                    <a @click="editWord(word)" class="is-flex-grow-1 crossword-word">
-                                        {{ word.word }}
-                                        ({{ word.word.length }})
-                                    </a>
-                                    <span v-if="word.alternatives">
-                                        <a @click="setAlternative(word, alternative)"
-                                           v-for="alternative in word.alternatives"
-                                           class="mx-1"
-                                           :key="alternative" v-show="alternative !== word.word">{{ alternative }}</a>
-                                    </span>
+                                    <div class="is-flex-grow-1 crossword-word">
+                                        <a @click="editWord(word)" class="is-flex-grow-1 crossword-word">
+                                            <span v-for="alternative in word.alternatives"
+                                                  :class="{'has-text-weight-bold': solutions[currentSolution].words.indexOf(alternative) >= 0}">
+                                                {{ alternative }}
+                                                ({{ alternative.length }})
+                                            </span>
+                                        </a>
+                                    </div>
                                     <a @click="editDefinition(word)" v-if="word.definition" class="is-size-7">
                                         {{ word.definition }}
                                     </a>
@@ -153,8 +152,8 @@
                             </div>
                         </div>
                         <div class="column">
-                            <p class="mb-3">Number of words: {{words.length}} / {{ placesInCrossing.length }}</p>
-                            <p v-for="stat in wordsInCrossingStats"
+                            <p class="mb-3">Number of words: {{justWords.length}} / {{ placesInCrossing.length }}</p>
+                            <p v-for="stat in wordsInCrossingStats(solutions[currentSolution].words)"
                                :class="{'has-text-success': stat.words === stat.places, 'has-text-danger': stat.words > stat.places}">
                                 {{ stat.length }}-letter words: {{ stat.words }} / {{ stat.places }}
                             </p>
@@ -280,7 +279,12 @@
                     this.temporaryModel = deepClone(this.crosswordModel);
                     this.crosswordWidth = this.crosswordModel[0].length;
                     this.crosswordHeight = this.crosswordModel.length;
-                    this.words = parsed.words;
+                    this.words = parsed.words.map(word => {
+                        if (!word.alternatives) {
+                            word.alternatives = [word.word];
+                        }
+                        return word;
+                    })
                     if (this.words.length) {
                         this.activeStep = 1;
                         this.solve();
@@ -288,7 +292,7 @@
                 }
             },
             addWord() {
-                const words = this.splitWord(this.newWord);
+                const words = this.splitWord(this.newWord.word);
                 if (this.justWords.indexOf(words[0]) >= 0) {
                     alert('Word already exists!');
                     return;
@@ -302,13 +306,15 @@
             },
             editWord(word) {
                 const fixed = prompt('Fix word', (word.alternatives || [word.word]).join('/'));
-                const words = this.splitWord(fixed);
-                word.word = words[0];
-                word.alternatives = words;
-                if (!word.word) {
-                    this.deleteWord(word);
+                if (fixed) {
+                    const words = this.splitWord(fixed);
+                    word.word = words[0];
+                    word.alternatives = words;
+                    if (!word.word) {
+                        this.deleteWord(word);
+                    }
+                    this.solve();
                 }
-                this.solve();
             },
             setAlternative(word, alternative) {
                 word.word = alternative;
@@ -330,22 +336,28 @@
                 console.time('solve');
                 if (this.words.length && this.placesInCrossing.length > 1) {
                     this.saveInLocalStorage();
-                    const wordsByLength = this.justWords.sort((w1, w2) => w2.length - w1.length);
+                    const wordsByLength = this.words.sort((w1, w2) => w2.word.length - w1.word.length);
                     let solutionCounter = 0;
                     let currentModels = [deepClone(this.crosswordModel)];
+                    currentModels[0].words = [];
                     try {
                         for (const word of wordsByLength) {
                             const nextWordModels = [];
-                            const possiblePlaces = this.placesInCrossing.filter((place) => place.length === word.length);
-                            for (const model of currentModels) {
-                                if (solutionCounter++ > 9998) {
-                                    throw new Error('too complicated');
-                                }
-                                for (let possiblePlace of possiblePlaces) {
-                                    try {
-                                        nextWordModels.push(this.writeWord(word, possiblePlace, deepClone(model)));
-                                    } catch (error) {
-                                        // ignore this model - impossible
+                            const alternatives = word.alternatives || [word.word];
+                            for (const alternative of alternatives) {
+                                const possiblePlaces = this.placesInCrossing.filter((place) => place.length === alternative.length);
+                                for (const model of currentModels) {
+                                    if (solutionCounter++ > 9998) {
+                                        throw new Error('too complicated');
+                                    }
+                                    for (let possiblePlace of possiblePlaces) {
+                                        try {
+                                            const newModel = this.writeWord(alternative, possiblePlace, deepClone(model));
+                                            newModel.words = [...model.words, alternative];
+                                            nextWordModels.push(newModel);
+                                        } catch (error) {
+                                            // ignore this model - impossible
+                                        }
                                     }
                                 }
                             }
@@ -400,6 +412,34 @@
                     words: this.words,
                 });
             },
+            wordsInCrossingStats(words) {
+                console.log('wordsInCrossingStats');
+                const placesByLength = {};
+                this.placesInCrossing.forEach((place) => {
+                    if (!placesByLength[place.length]) {
+                        placesByLength[place.length] = 0;
+                    }
+                    placesByLength[place.length]++;
+                });
+                const wordsByLength = {};
+                words.forEach((word) => {
+                    if (!wordsByLength[word.length]) {
+                        wordsByLength[word.length] = 0;
+                    }
+                    wordsByLength[word.length]++;
+                });
+                const stats = [];
+                for (const length in placesByLength) {
+                    stats.push({length: +length, places: placesByLength[length], words: wordsByLength[length] || 0});
+                }
+                for (const length in wordsByLength) {
+                    if (!placesByLength[length]) {
+                        stats.push({length: +length, places: 0, words: wordsByLength[length]});
+                    }
+                }
+                stats.sort((w1, w2) => w1.length - w2.length);
+                return stats;
+            },
         },
         computed: {
             placesInCrossing() {
@@ -444,34 +484,6 @@
             },
             justWords() {
                 return this.words.map(({word}) => word);
-            },
-            wordsInCrossingStats() {
-                console.log('wordsInCrossingStats');
-                const placesByLength = {};
-                this.placesInCrossing.forEach((place) => {
-                    if (!placesByLength[place.length]) {
-                        placesByLength[place.length] = 0;
-                    }
-                    placesByLength[place.length]++;
-                });
-                const wordsByLength = {};
-                this.justWords.forEach((word) => {
-                    if (!wordsByLength[word.length]) {
-                        wordsByLength[word.length] = 0;
-                    }
-                    wordsByLength[word.length]++;
-                });
-                const stats = [];
-                for (const length in placesByLength) {
-                    stats.push({length: +length, places: placesByLength[length], words: wordsByLength[length] || 0});
-                }
-                for (const length in wordsByLength) {
-                    if (!placesByLength[length]) {
-                        stats.push({length: +length, places: 0, words: wordsByLength[length]});
-                    }
-                }
-                stats.sort((w1, w2) => w1.length - w2.length);
-                return stats;
             },
         },
     });
