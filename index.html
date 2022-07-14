@@ -33,6 +33,11 @@
         .crossword-row:last-child .crossword-square {
             border-bottom-width: 1px;
         }
+
+        .draw-mode-changer {
+            display: inline-block;
+            border-bottom-width: 1px;
+        }
     </style>
 </head>
 <body>
@@ -40,6 +45,7 @@
     <h1 class="title">
         Jolka Solver
     </h1>
+
     <b-steps
             v-model="activeStep"
             :animated="true"
@@ -50,7 +56,7 @@
                 <p class="subtitle has-text-centered">
                     Set the size of the crossword field (in <em>letter squares</em>unit), then draw the crossword.
                 </p>
-                <div class="has-text-centered">
+                <div class="container has-text-centered">
                     <div class="columns">
                         <div class="column">
                             <b-field label="Crossword width">
@@ -65,7 +71,7 @@
                         </div>
                     </div>
                     <b-field label="Drawing mode">
-                        <div :class="['crossword-square', {'letter': temporaryModel[$ri][$ci]}]"
+                        <div :class="['crossword-square draw-mode-changer', {'letter': drawMode}]"
                              @click="drawMode = drawMode ? 0 : 1"></div>
                     </b-field>
                 </div>
@@ -79,6 +85,9 @@
                              @mouseup="finishDrawing([$ri, $ci])"></div>
                     </div>
                 </div>
+                <div class="mt-5 has-text-centered">
+                    Liczba słów: {{ wordsInCrossing.length }}
+                </div>
             </div>
         </b-step-item>
 
@@ -87,8 +96,14 @@
             Lorem ipsum dolor sit amet.
         </b-step-item>
     </b-steps>
+
+    <div class="has-text-centered">
+        <b-button v-clipboard:copy="crosswordRepresentation">Copy crossword to clipboard</b-button>
+        <b-button @click="pasteCrossword()">Init crossword from copied model</b-button>
+    </div>
 </section>
 <script src="https://unpkg.com/vue@2"></script>
+<script src="https://cdn.jsdelivr.net/gh/Inndy/vue-clipboard2/dist/vue-clipboard.min.js"></script>
 <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
 <script>
     function deepClone(object) {
@@ -102,14 +117,20 @@
                 activeStep: 0,
                 crosswordWidth: 10,
                 crosswordHeight: 10,
-                crosswordModel: [],
+                crosswordModel: [[]],
                 temporaryModel: [],
                 drawMode: 1,
                 drawingStart: undefined,
+                mouseUpCatcher: undefined,
             }
         },
         mounted() {
             this.updateCrosswordModel();
+            this.mouseUpCatcher = () => this.finishDrawing();
+            window.addEventListener('mouseup', this.mouseUpCatcher);
+        },
+        beforeDestroy() {
+            window.removeEventListener('mouseup', this.mouseUpCatcher);
         },
         methods: {
             updateCrosswordModel() {
@@ -148,6 +169,62 @@
                 this.crosswordModel = this.temporaryModel;
                 this.drawingStart = undefined;
             },
+            pasteCrossword() {
+                const pasted = prompt('Crossword model you have copied before');
+                const parsed = JSON.parse(pasted);
+                if (parsed && parsed.crosswordModel) {
+                    this.crosswordModel = parsed.crosswordModel;
+                    this.temporaryModel = deepClone(this.crosswordModel);
+                    this.crosswordWidth = this.crosswordModel[0].length;
+                    this.crosswordHeight = this.crosswordModel.length;
+                }
+            }
+        },
+        computed: {
+            wordsInCrossing() {
+                const words = [];
+                for (let row = 0; row < this.crosswordModel.length; row++) {
+                    for (let col = 0; col < this.crosswordModel[0].length; col++) {
+                        const currentIsLetter = !!this.crosswordModel[row][col];
+                        const isWordStartHorizontal = currentIsLetter && (col === 0 || !this.crosswordModel[row][col - 1]);
+                        const isWordStartVertical = currentIsLetter && (row === 0 || !this.crosswordModel[row - 1][col]);
+                        if (isWordStartHorizontal) {
+                            let finishCol = col;
+                            for (let letter = col + 1; letter < this.crosswordWidth && this.crosswordModel[row][letter]; letter++) {
+                                finishCol = letter;
+                            }
+                            if (finishCol !== col) {
+                                words.push({
+                                    direction: 'horizontal',
+                                    startRow: row,
+                                    startCol: col,
+                                    length: finishCol - col + 1,
+                                });
+                            }
+                        }
+                        if (isWordStartVertical) {
+                            let finishRow = row;
+                            for (let letter = row + 1; letter < this.crosswordHeight && this.crosswordModel[letter][col]; letter++) {
+                                finishRow = letter;
+                            }
+                            if (finishRow !== row) {
+                                words.push({
+                                    direction: 'vertical',
+                                    startRow: row,
+                                    startCol: col,
+                                    length: finishRow - row + 1,
+                                });
+                            }
+                        }
+                    }
+                }
+                return words;
+            },
+            crosswordRepresentation() {
+                return JSON.stringify({
+                    crosswordModel: this.crosswordModel,
+                });
+            }
         },
     });
 </script>
