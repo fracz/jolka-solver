@@ -38,6 +38,10 @@
             display: inline-block;
             border-bottom-width: 1px;
         }
+
+        .crossword-word {
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -47,6 +51,7 @@
     </h1>
 
     <b-steps
+            @input="solve()"
             v-model="activeStep"
             :animated="true"
             :has-navigation="false">
@@ -86,14 +91,76 @@
                     </div>
                 </div>
                 <div class="mt-5 has-text-centered">
-                    Liczba słów: {{ wordsInCrossing.length }}
+                    Number of words: {{ placesInCrossing.length }}
                 </div>
             </div>
         </b-step-item>
 
-        <b-step-item step="2" label="Give words" :clickable="true">
-            <h1 class="title has-text-centered">Give words</h1>
-            Lorem ipsum dolor sit amet.
+        <b-step-item step="2" label="Give words" :clickable="placesInCrossing.length > 1">
+            <div v-if="activeStep == 1">
+                <h1 class="title has-text-centered">Give words</h1>
+                <p class="subtitle has-text-centered">
+                    If the crossword is ready, provide a word definitions you guessed and then solve the crossword.
+                </p>
+                <div class="mt-5 crossword-preview is-flex is-flex-direction-column">
+                    <div v-for="(row, $ri) in crosswordModel" :key="'row' + $ri"
+                         class="crossword-row is-flex is-justify-content-center">
+                        <div v-for="(col, $ci) in row" :key="'col' + $ri + $ci"
+                             :class="['crossword-square', {'letter': temporaryModel[$ri][$ci]}]">
+                            <span v-if="solutions[0] && solutions[0][$ri][$ci] !== 1 && solutions[0][$ri][$ci] !== 0">
+                                {{ solutions[0][$ri][$ci]}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="has-text-centered mt-2" v-if="solutions.length > 1">
+                    Possible other solutions: {{ solutions.length - 1 }}.
+                </div>
+                <div class="has-text-centered mt-2 has-text-success" v-else-if="solutions.length === 1">
+                    This is the only solution.
+                </div>
+                <div class="has-text-centered mt-2 has-text-danger" v-else>
+                    No solution found.
+                </div>
+                <div class="is-size-7 has-text-centered mt-1" v-if="solutionCounter > 0">
+                    iterations: {{ solutionCounter }}
+                </div>
+                <div class="container">
+                    <form @submit.prevent="addWord()">
+                        <b-field label="Word to crossword">
+                            <b-input v-model="newWord.word"></b-input>
+                        </b-field>
+                        <b-field label="Definition (optional)">
+                            <b-input v-model="newWord.definition"></b-input>
+                        </b-field>
+                        <b-button native-type="submit">Add word</b-button>
+                    </form>
+                    <div class="columns my-5">
+                        <div class="column">
+                            <div class="panel">
+                                <div class="panel-block" v-for="word in words" :key="word.word">
+                                    <a @click="editWord(word)" class="is-flex-grow-1 crossword-word">
+                                        {{ word.word }}
+                                        ({{ word.word.length }})
+                                    </a>
+                                    <a @click="editDefinition(word)" v-if="word.definition" class="is-size-7">
+                                        {{ word.definition }}
+                                    </a>
+                                    <a @click="editDefinition(word)" v-else class="is-size-7"><em>no definition</em></a>
+                                    <button class="delete ml-2" @click="deleteWord(word)"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <p class="mb-3">Number of words: {{words.length}} / {{ placesInCrossing.length }}</p>
+                            <p v-for="stat in wordsInCrossingStats"
+                               :class="{'has-text-success': stat.words === stat.places, 'has-text-danger': stat.words > stat.places}">
+                                {{ stat.length }}-letter words: {{ stat.words }} / {{ stat.places }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </b-step-item>
     </b-steps>
 
@@ -114,20 +181,29 @@
         el: '#app',
         data() {
             return {
-                activeStep: 0,
-                crosswordWidth: 10,
-                crosswordHeight: 10,
+                activeStep: 1,
+                crosswordWidth: 14,
+                crosswordHeight: 14,
                 crosswordModel: [[]],
                 temporaryModel: [],
+                // temporaryModel: [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0], [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0], [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1], [1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0], [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0], [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]],
                 drawMode: 1,
                 drawingStart: undefined,
                 mouseUpCatcher: undefined,
+                words: [],
+                newWord: {},
+                solutions: [],
+                solutionCounter: 0,
             }
         },
         mounted() {
             this.updateCrosswordModel();
             this.mouseUpCatcher = () => this.finishDrawing();
             window.addEventListener('mouseup', this.mouseUpCatcher);
+            const fromLocalStorage = localStorage.getItem('jolka');
+            if (fromLocalStorage) {
+                this.loadCrossword(fromLocalStorage);
+            }
         },
         beforeDestroy() {
             window.removeEventListener('mouseup', this.mouseUpCatcher);
@@ -168,20 +244,103 @@
             finishDrawing() {
                 this.crosswordModel = this.temporaryModel;
                 this.drawingStart = undefined;
+                this.saveInLocalStorage();
             },
             pasteCrossword() {
                 const pasted = prompt('Crossword model you have copied before');
-                const parsed = JSON.parse(pasted);
+                this.loadCrossword(pasted);
+            },
+            loadCrossword(crossword) {
+                const parsed = JSON.parse(crossword);
+                console.log(parsed);
                 if (parsed && parsed.crosswordModel) {
                     this.crosswordModel = parsed.crosswordModel;
                     this.temporaryModel = deepClone(this.crosswordModel);
                     this.crosswordWidth = this.crosswordModel[0].length;
                     this.crosswordHeight = this.crosswordModel.length;
+                    this.words = parsed.words;
+                    this.solve();
                 }
-            }
+            },
+            addWord() {
+                const word = this.newWord.word.trim().toUpperCase();
+                const definition = this.newWord.definition?.trim() || '';
+                this.words.push({word, definition});
+                this.newWord = {};
+                this.saveInLocalStorage();
+                this.solve();
+            },
+            editWord(word) {
+                const fixed = prompt('Fix word', word.word);
+                word.word = fixed.trim().toUpperCase();
+                if (!word.word) {
+                    this.deleteWord(word);
+                }
+                this.saveInLocalStorage();
+                this.solve();
+            },
+            editDefinition(word) {
+                word.definition = prompt('Fix definition', word.definition);
+                this.saveInLocalStorage();
+            },
+            deleteWord(word) {
+                this.words.splice(this.words.indexOf(word), 1);
+                this.saveInLocalStorage();
+                this.solve();
+            },
+            solve() {
+                if (this.words.length && this.placesInCrossing.length > 1) {
+                    const wordsByLength = this.justWords.sort((w1, w2) => w2.length - w1.length);
+                    let solutionCounter = 0;
+                    let currentModels = [deepClone(this.crosswordModel)];
+                    for (const word of wordsByLength) {
+                        const nextWordModels = [];
+                        const possiblePlaces = this.placesInCrossing.filter((place) => place.length === word.length);
+                        for (const model of currentModels) {
+                            solutionCounter++;
+                            for (let possiblePlace of possiblePlaces) {
+                                try {
+                                    nextWordModels.push(this.writeWord(word, possiblePlace, deepClone(model)));
+                                } catch (error) {
+                                    // ignore this model - impossible
+                                }
+                            }
+                        }
+                        currentModels = nextWordModels;
+                    }
+                    this.solutions = currentModels;
+                    this.solutionCounter = solutionCounter;
+                }
+            },
+            writeWord(word, place, model) {
+                if (place.direction === 'horizontal') {
+                    for (let i = 0; i < place.length; i++) {
+                        const char = word.charAt(i);
+                        if (model[place.startRow][place.startCol + i] === 1 || model[place.startRow][place.startCol + i] === char) {
+                            model[place.startRow][place.startCol + i] = char;
+                        } else {
+                            throw new Error('Does not suit');
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < place.length; i++) {
+                        const char = word.charAt(i);
+                        if (model[place.startRow + i][place.startCol] === 1 || model[place.startRow + i][place.startCol] === char) {
+                            model[place.startRow + i][place.startCol] = char;
+                        } else {
+                            throw new Error('Does not suit');
+                        }
+                    }
+                }
+                return model;
+            },
+            saveInLocalStorage() {
+                localStorage.setItem('jolka', this.crosswordRepresentation);
+            },
         },
         computed: {
-            wordsInCrossing() {
+            placesInCrossing() {
+                console.log('placesInCrossing');
                 const words = [];
                 for (let row = 0; row < this.crosswordModel.length; row++) {
                     for (let col = 0; col < this.crosswordModel[0].length; col++) {
@@ -220,11 +379,44 @@
                 }
                 return words;
             },
+            justWords() {
+                return this.words.map(({word}) => word);
+            },
+            wordsInCrossingStats() {
+                console.log('wordsInCrossingStats');
+                const placesByLength = {};
+                this.placesInCrossing.forEach((place) => {
+                    if (!placesByLength[place.length]) {
+                        placesByLength[place.length] = 0;
+                    }
+                    placesByLength[place.length]++;
+                });
+                const wordsByLength = {};
+                this.justWords.forEach((word) => {
+                    if (!wordsByLength[word.length]) {
+                        wordsByLength[word.length] = 0;
+                    }
+                    wordsByLength[word.length]++;
+                });
+                const stats = [];
+                for (const length in placesByLength) {
+                    stats.push({length: +length, places: placesByLength[length], words: wordsByLength[length] || 0});
+                }
+                for (const length in wordsByLength) {
+                    if (!placesByLength[length]) {
+                        stats.push({length: +length, places: 0, words: wordsByLength[length]});
+                    }
+                }
+                stats.sort((w1, w2) => w1.length - w2.length);
+                return stats;
+            },
             crosswordRepresentation() {
+                console.log('crosswordRepresentation');
                 return JSON.stringify({
                     crosswordModel: this.crosswordModel,
+                    words: this.words,
                 });
-            }
+            },
         },
     });
 </script>
