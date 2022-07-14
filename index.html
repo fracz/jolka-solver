@@ -306,19 +306,19 @@
                 }
             },
             addWord() {
-                const words = this.splitWord(this.newWord.word);
-                for (let word of words) {
+                const alternatives = this.splitWord(this.newWord.word);
+                for (let word of alternatives) {
                     if (this.wordExists(word)) {
                         alert(`Word ${word} already exists!`);
                         return;
                     }
                 }
-                const word = words[0];
-                const alternatives = words;
-                const definition = this.newWord.definition?.trim() || '';
-                this.words.push({word, alternatives, definition});
-                this.newWord = {};
-                this.solve();
+                if (alternatives.length) {
+                    const definition = this.newWord.definition?.trim() || '';
+                    this.words.push({alternatives, definition});
+                    this.newWord = {};
+                    this.solve();
+                }
             },
             wordExists(w) {
                 return this.words.filter(word => word.alternatives.indexOf(w) >= 0).length > 0;
@@ -340,7 +340,7 @@
                 }
             },
             splitWord(word) {
-                return word.trim().toUpperCase().split('/').map(w => w.trim()).filter(w => w);
+                return (word || '').trim().toUpperCase().split('/').map(w => w.trim()).filter(w => w);
             },
             editDefinition(word) {
                 word.definition = prompt('Fix definition', word.definition);
