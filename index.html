@@ -217,7 +217,7 @@
         template: `
           <form @submit.prevent="addWord()">
           <b-field label="Word to crossword">
-            <b-input v-model="newWord.word"></b-input>
+            <b-input v-model="newWord.word" placeholder="solution/alternative/another"></b-input>
           </b-field>
           <b-field label="Definition (optional)">
             <b-input v-model="newWord.definition"></b-input>
@@ -457,6 +457,9 @@
                     }
                     placesByLength[place.length]++;
                 });
+                if (words.length === 0) {
+                    words = this.words.map(word => word.alternatives[0]);
+                }
                 const wordsByLength = {};
                 words.forEach((word) => {
                     if (!wordsByLength[word.length]) {
