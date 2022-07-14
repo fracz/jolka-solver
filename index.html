@@ -132,7 +132,7 @@
                                     <div class="is-flex-grow-1 crossword-word">
                                         <a @click="editWord(word)" class="is-flex-grow-1 crossword-word">
                                             <span v-for="alternative in word.alternatives"
-                                                  :class="{'has-text-weight-bold': solutions[currentSolution].words.indexOf(alternative) >= 0}">
+                                                  :class="{'has-text-weight-bold': solutions[currentSolution] && solutions[currentSolution].words.indexOf(alternative) >= 0}">
                                                 {{ alternative }}
                                                 ({{ alternative.length }})
                                             </span>
