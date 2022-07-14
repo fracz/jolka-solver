@@ -128,7 +128,8 @@
                     <div class="columns my-5">
                         <div class="column">
                             <div class="panel">
-                                <div class="panel-block" v-for="(word, $i) in words" :key="'word' + $i">
+                                <div :class="['panel-block', {'has-background-danger-light': solutions[currentSolution] && !existsInSolution(word.alternatives)}]"
+                                     v-for="(word, $i) in words" :key="'word' + $i">
                                     <div class="is-flex-grow-1 crossword-word">
                                         <a @click="editWord(word)" class="is-flex-grow-1 crossword-word">
                                             <span v-for="alternative in word.alternatives"
@@ -344,12 +345,12 @@
                 const fixed = prompt('Fix word', word.alternatives.join('/'));
                 if (fixed) {
                     const words = this.splitWord(fixed);
-                    for (let word of words) {
-                        if (this.wordExists(word)) {
-                            alert(`Word ${word} already exists!`);
-                            return;
-                        }
-                    }
+                    // for (let word of words) {
+                    //     if (this.wordExists(word)) {
+                    //         alert(`Word ${word} already exists!`);
+                    //         return;
+                    //     }
+                    // }
                     word.alternatives = words;
                     this.solve();
                 } else if (fixed === '') {
@@ -372,7 +373,10 @@
                 console.time('solve');
                 if (this.words.length && this.placesInCrossing.length > 1) {
                     this.saveInLocalStorage();
-                    const wordsByLength = this.words.sort((w1, w2) => w2.alternatives[0].length - w1.alternatives[0].length);
+                    const placesByLength = this.placesByLength;
+                    const wordsByLength = this.words.sort((w1, w2) => (placesByLength[w1.alternatives[0].length] || 100) - (placesByLength[w2.alternatives[0].length] || 100));
+                    // const wordsByLength = this.words.sort((w1, w2) => w2.alternatives[0].length - w1.alternatives[0].length);
+                    console.log(wordsByLength);
                     let solutionCounter = 0;
                     let currentModels = [deepClone(this.crosswordModel)];
                     currentModels[0].words = [];
@@ -397,7 +401,9 @@
                                     }
                                 }
                             }
-                            currentModels = nextWordModels;
+                            if (nextWordModels.length) {
+                                currentModels = nextWordModels;
+                            }
                         }
                         this.currentSolution = 0;
                         this.solutions = currentModels.slice(0, 101);
@@ -450,13 +456,7 @@
             },
             wordsInCrossingStats(words) {
                 console.log('wordsInCrossingStats');
-                const placesByLength = {};
-                this.placesInCrossing.forEach((place) => {
-                    if (!placesByLength[place.length]) {
-                        placesByLength[place.length] = 0;
-                    }
-                    placesByLength[place.length]++;
-                });
+
                 if (words.length === 0) {
                     words = this.words.map(word => word.alternatives[0]);
                 }
@@ -468,6 +468,7 @@
                     wordsByLength[word.length]++;
                 });
                 const stats = [];
+                const placesByLength = this.placesByLength;
                 for (const length in placesByLength) {
                     stats.push({length: +length, places: placesByLength[length], words: wordsByLength[length] || 0});
                 }
@@ -499,6 +500,9 @@
                     stats.push({letter, count: letters[letter]});
                 }
                 return stats.sort((a, b) => a.letter.localeCompare(b.letter));
+            },
+            existsInSolution(alternatives) {
+                return alternatives.filter(a => this.solutions[this.currentSolution].words.indexOf(a) >= 0).length > 0;
             },
         },
         computed: {
@@ -542,8 +546,15 @@
                 }
                 return words;
             },
-            justWords() {
-                return this.words.map(({word}) => word);
+            placesByLength() {
+                const placesByLength = {};
+                this.placesInCrossing.forEach((place) => {
+                    if (!placesByLength[place.length]) {
+                        placesByLength[place.length] = 0;
+                    }
+                    placesByLength[place.length]++;
+                });
+                return placesByLength;
             },
         },
     });
