@@ -102,25 +102,20 @@
                 <p class="subtitle has-text-centered">
                     If the crossword is ready, provide a word definitions you guessed and then solve the crossword.
                 </p>
-                <div class="mt-5 crossword-preview is-flex is-flex-direction-column">
-                    <div v-for="(row, $ri) in crosswordModel" :key="'row' + $ri"
-                         class="crossword-row is-flex is-justify-content-center">
-                        <div v-for="(col, $ci) in row" :key="'col' + $ri + $ci"
-                             :class="['crossword-square', {'letter': temporaryModel[$ri][$ci]}]">
-                            <span v-if="solutions[0] && solutions[0][$ri][$ci] !== 1 && solutions[0][$ri][$ci] !== 0">
-                                {{ solutions[0][$ri][$ci]}}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <crossword-preview :model="crosswordModel"
+                                   :solution="solutions[currentSolution]"></crossword-preview>
                 <div class="has-text-centered mt-2" v-if="solutions.length > 1">
-                    Possible other solutions: {{ solutions.length - 1 }}.
+                    Possible other solutions: {{ solutions.length - 1 }}{{ solutions.length > 100 ? '+' : '' }}.
+                    <a @click="currentSolution = currentSolution + 1 >= solutions.length ? 0 : currentSolution + 1">&raquo;</a>
                 </div>
                 <div class="has-text-centered mt-2 has-text-success" v-else-if="solutions.length === 1">
                     This is the only solution.
                 </div>
-                <div class="has-text-centered mt-2 has-text-danger" v-else>
+                <div class="has-text-centered mt-2 has-text-danger" v-else-if="solutionCounter < 10000">
                     No solution found.
+                </div>
+                <div class="has-text-centered mt-2 has-text-danger" v-else>
+                    Too complicated. Please add more words.
                 </div>
                 <div class="is-size-7 has-text-centered mt-1" v-if="solutionCounter > 0">
                     iterations: {{ solutionCounter }}
@@ -143,6 +138,12 @@
                                         {{ word.word }}
                                         ({{ word.word.length }})
                                     </a>
+                                    <span v-if="word.alternatives">
+                                        <a @click="setAlternative(word, alternative)"
+                                           v-for="alternative in word.alternatives"
+                                           class="mx-1"
+                                           :key="alternative" v-show="alternative !== word.word">{{ alternative }}</a>
+                                    </span>
                                     <a @click="editDefinition(word)" v-if="word.definition" class="is-size-7">
                                         {{ word.definition }}
                                     </a>
@@ -165,8 +166,9 @@
     </b-steps>
 
     <div class="has-text-centered">
-        <b-button v-clipboard:copy="crosswordRepresentation">Copy crossword to clipboard</b-button>
+        <b-button v-clipboard:copy="getCrosswordRepresentation()">Copy crossword to clipboard</b-button>
         <b-button @click="pasteCrossword()">Init crossword from copied model</b-button>
+        <b-button @click="restart()">Start new crossing</b-button>
     </div>
 </section>
 <script src="https://unpkg.com/vue@2"></script>
@@ -177,16 +179,34 @@
         return JSON.parse(JSON.stringify(object));
     }
 
+    const CrosswordPreview = {
+        name: 'CrosswordPreview',
+        props: ['model', 'solution'],
+        template: `
+          <div class="mt-5 crossword-preview is-flex is-flex-direction-column">
+          <div v-for="(row, $ri) in model" :key="'row' + $ri"
+               class="crossword-row is-flex is-justify-content-center">
+            <div v-for="(col, $ci) in row" :key="'col' + $ri + $ci"
+                 :class="['crossword-square', {'letter': model[$ri][$ci]}]">
+              <span v-if="solution && solution[$ri][$ci] !== 1 && solution[$ri][$ci] !== 0">
+                {{ solution[$ri][$ci] }}
+              </span>
+            </div>
+          </div>
+          </div>
+        `,
+    };
+
     new Vue({
         el: '#app',
+        components: {CrosswordPreview},
         data() {
             return {
-                activeStep: 1,
+                activeStep: 0,
                 crosswordWidth: 14,
                 crosswordHeight: 14,
                 crosswordModel: [[]],
                 temporaryModel: [],
-                // temporaryModel: [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0], [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0], [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1], [1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0], [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0], [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]],
                 drawMode: 1,
                 drawingStart: undefined,
                 mouseUpCatcher: undefined,
@@ -194,6 +214,8 @@
                 newWord: {},
                 solutions: [],
                 solutionCounter: 0,
+                currentSolution: 0,
+                disablePreview: true,
             }
         },
         mounted() {
@@ -259,25 +281,41 @@
                     this.crosswordWidth = this.crosswordModel[0].length;
                     this.crosswordHeight = this.crosswordModel.length;
                     this.words = parsed.words;
-                    this.solve();
+                    if (this.words.length) {
+                        this.activeStep = 1;
+                        this.solve();
+                    }
                 }
             },
             addWord() {
-                const word = this.newWord.word.trim().toUpperCase();
+                const words = this.splitWord(this.newWord);
+                if (this.justWords.indexOf(words[0]) >= 0) {
+                    alert('Word already exists!');
+                    return;
+                }
+                const word = words[0];
+                const alternatives = words;
                 const definition = this.newWord.definition?.trim() || '';
-                this.words.push({word, definition});
+                this.words.push({word, alternatives, definition});
                 this.newWord = {};
-                this.saveInLocalStorage();
                 this.solve();
             },
             editWord(word) {
-                const fixed = prompt('Fix word', word.word);
-                word.word = fixed.trim().toUpperCase();
+                const fixed = prompt('Fix word', (word.alternatives || [word.word]).join('/'));
+                const words = this.splitWord(fixed);
+                word.word = words[0];
+                word.alternatives = words;
                 if (!word.word) {
                     this.deleteWord(word);
                 }
-                this.saveInLocalStorage();
                 this.solve();
+            },
+            setAlternative(word, alternative) {
+                word.word = alternative;
+                this.solve();
+            },
+            splitWord(word) {
+                return word.trim().toUpperCase().split('/').map(w => w.trim()).filter(w => w);
             },
             editDefinition(word) {
                 word.definition = prompt('Fix definition', word.definition);
@@ -285,32 +323,44 @@
             },
             deleteWord(word) {
                 this.words.splice(this.words.indexOf(word), 1);
-                this.saveInLocalStorage();
                 this.solve();
             },
             solve() {
+                console.log('solve');
+                console.time('solve');
                 if (this.words.length && this.placesInCrossing.length > 1) {
+                    this.saveInLocalStorage();
                     const wordsByLength = this.justWords.sort((w1, w2) => w2.length - w1.length);
                     let solutionCounter = 0;
                     let currentModels = [deepClone(this.crosswordModel)];
-                    for (const word of wordsByLength) {
-                        const nextWordModels = [];
-                        const possiblePlaces = this.placesInCrossing.filter((place) => place.length === word.length);
-                        for (const model of currentModels) {
-                            solutionCounter++;
-                            for (let possiblePlace of possiblePlaces) {
-                                try {
-                                    nextWordModels.push(this.writeWord(word, possiblePlace, deepClone(model)));
-                                } catch (error) {
-                                    // ignore this model - impossible
+                    try {
+                        for (const word of wordsByLength) {
+                            const nextWordModels = [];
+                            const possiblePlaces = this.placesInCrossing.filter((place) => place.length === word.length);
+                            for (const model of currentModels) {
+                                if (solutionCounter++ > 9998) {
+                                    throw new Error('too complicated');
+                                }
+                                for (let possiblePlace of possiblePlaces) {
+                                    try {
+                                        nextWordModels.push(this.writeWord(word, possiblePlace, deepClone(model)));
+                                    } catch (error) {
+                                        // ignore this model - impossible
+                                    }
                                 }
                             }
+                            currentModels = nextWordModels;
                         }
-                        currentModels = nextWordModels;
+                        this.currentSolution = 0;
+                        this.solutions = currentModels.slice(0, 101);
+                        this.solutionCounter = solutionCounter;
+                    } catch (e) {
+                        this.solutions = [];
+                        this.currentSolution = 0;
+                        this.solutionCounter = solutionCounter;
                     }
-                    this.solutions = currentModels;
-                    this.solutionCounter = solutionCounter;
                 }
+                console.timeEnd('solve');
             },
             writeWord(word, place, model) {
                 if (place.direction === 'horizontal') {
@@ -335,7 +385,20 @@
                 return model;
             },
             saveInLocalStorage() {
-                localStorage.setItem('jolka', this.crosswordRepresentation);
+                localStorage.setItem('jolka', this.getCrosswordRepresentation());
+            },
+            restart() {
+                if (confirm('All changes will be lost unless you saved it!')) {
+                    localStorage.removeItem('jolka');
+                    window.location.href = window.location.toString();
+                }
+            },
+            getCrosswordRepresentation() {
+                console.log('crosswordRepresentation');
+                return JSON.stringify({
+                    crosswordModel: this.crosswordModel,
+                    words: this.words,
+                });
             },
         },
         computed: {
@@ -409,13 +472,6 @@
                 }
                 stats.sort((w1, w2) => w1.length - w2.length);
                 return stats;
-            },
-            crosswordRepresentation() {
-                console.log('crosswordRepresentation');
-                return JSON.stringify({
-                    crosswordModel: this.crosswordModel,
-                    words: this.words,
-                });
             },
         },
     });
