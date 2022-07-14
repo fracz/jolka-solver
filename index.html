@@ -124,15 +124,7 @@
                     </div>
                 </div>
                 <div class="container">
-                    <form @submit.prevent="addWord()">
-                        <b-field label="Word to crossword">
-                            <b-input v-model="newWord.word"></b-input>
-                        </b-field>
-                        <b-field label="Definition (optional)">
-                            <b-input v-model="newWord.definition"></b-input>
-                        </b-field>
-                        <b-button native-type="submit">Add word</b-button>
-                    </form>
+                    <add-word-form @added="addWord($event)"></add-word-form>
                     <div class="columns my-5">
                         <div class="column">
                             <div class="panel">
@@ -208,9 +200,36 @@
         `,
     };
 
+    const AddWordForm = {
+        data() {
+            return {
+                newWord: {word: ''},
+            };
+        },
+        methods: {
+            addWord() {
+                if (this.newWord.word.trim()) {
+                    this.$emit('added', this.newWord);
+                }
+                this.newWord = {word: ''};
+            }
+        },
+        template: `
+          <form @submit.prevent="addWord()">
+          <b-field label="Word to crossword">
+            <b-input v-model="newWord.word"></b-input>
+          </b-field>
+          <b-field label="Definition (optional)">
+            <b-input v-model="newWord.definition"></b-input>
+          </b-field>
+          <b-button native-type="submit">Add word</b-button>
+          </form>
+        `,
+    };
+
     new Vue({
         el: '#app',
-        components: {CrosswordPreview},
+        components: {CrosswordPreview, AddWordForm},
         data() {
             return {
                 activeStep: 0,
@@ -222,7 +241,6 @@
                 drawingStart: undefined,
                 mouseUpCatcher: undefined,
                 words: [],
-                newWord: {},
                 solutions: [],
                 solutionCounter: 0,
                 currentSolution: 0,
@@ -305,8 +323,8 @@
                     }
                 }
             },
-            addWord() {
-                const alternatives = this.splitWord(this.newWord.word);
+            addWord(newWord) {
+                const alternatives = this.splitWord(newWord.word);
                 for (let word of alternatives) {
                     if (this.wordExists(word)) {
                         alert(`Word ${word} already exists!`);
@@ -314,9 +332,8 @@
                     }
                 }
                 if (alternatives.length) {
-                    const definition = this.newWord.definition?.trim() || '';
+                    const definition = newWord.definition?.trim() || '';
                     this.words.push({alternatives, definition});
-                    this.newWord = {};
                     this.solve();
                 }
             },
