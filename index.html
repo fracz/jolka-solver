@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jolka Solver</title>
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+    <style>
+        .crossword-preview {
+            user-select: none;
+        }
+
+        .crossword-square {
+            height: 35px;
+            width: 35px;
+            line-height: 35px;
+            border: 1px solid grey;
+            text-align: center;
+            border-bottom-width: 0;
+            border-right-width: 0;
+            background: black;
+        }
+
+        .crossword-square.letter {
+            background: white;
+        }
+
+        .crossword-square:last-child {
+            border-right-width: 1px;
+        }
+
+        .crossword-row:last-child .crossword-square {
+            border-bottom-width: 1px;
+        }
+    </style>
+</head>
+<body>
+<section class="section" id="app">
+    <h1 class="title">
+        Jolka Solver
+    </h1>
+    <b-steps
+            v-model="activeStep"
+            :animated="true"
+            :has-navigation="false">
+        <b-step-item step="1" label="Design crossword" :clickable="true">
+            <div v-if="activeStep == 0">
+                <h1 class="title has-text-centered">Design crossword</h1>
+                <p class="subtitle has-text-centered">
+                    Set the size of the crossword field (in <em>letter squares</em>unit), then draw the crossword.
+                </p>
+                <div class="has-text-centered">
+                    <div class="columns">
+                        <div class="column">
+                            <b-field label="Crossword width">
+                                <b-numberinput v-model="crosswordWidth" @input="updateCrosswordModel()"></b-numberinput>
+                            </b-field>
+                        </div>
+                        <div class="column">
+                            <b-field label="Crossword height">
+                                <b-numberinput v-model="crosswordHeight"
+                                               @input="updateCrosswordModel()"></b-numberinput>
+                            </b-field>
+                        </div>
+                    </div>
+                    <b-field label="Drawing mode">
+                        <div :class="['crossword-square', {'letter': temporaryModel[$ri][$ci]}]"
+                             @click="drawMode = drawMode ? 0 : 1"></div>
+                    </b-field>
+                </div>
+                <div class="mt-5 crossword-preview is-flex is-flex-direction-column">
+                    <div v-for="(row, $ri) in crosswordModel" :key="'row' + $ri"
+                         class="crossword-row is-flex is-justify-content-center">
+                        <div v-for="(col, $ci) in row" :key="'col' + $ri + $ci"
+                             :class="['crossword-square', {'letter': temporaryModel[$ri][$ci]}]"
+                             @mousedown="startDrawing([$ri, $ci])"
+                             @mouseenter="drawWord([$ri, $ci])"
+                             @mouseup="finishDrawing([$ri, $ci])"></div>
+                    </div>
+                </div>
+            </div>
+        </b-step-item>
+
+        <b-step-item step="2" label="Give words" :clickable="true">
+            <h1 class="title has-text-centered">Give words</h1>
+            Lorem ipsum dolor sit amet.
+        </b-step-item>
+    </b-steps>
+</section>
+<script src="https://unpkg.com/vue@2"></script>
+<script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+<script>
+    function deepClone(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                activeStep: 0,
+                crosswordWidth: 10,
+                crosswordHeight: 10,
+                crosswordModel: [],
+                temporaryModel: [],
+                drawMode: 1,
+                drawingStart: undefined,
+            }
+        },
+        mounted() {
+            this.updateCrosswordModel();
+        },
+        methods: {
+            updateCrosswordModel() {
+                const newCrosswordModel = new Array(this.crosswordHeight).fill(0).map(() => new Array(this.crosswordWidth).fill(0));
+                this.crosswordModel = newCrosswordModel;
+                for (let i = 0; i < Math.min(this.crosswordHeight, this.temporaryModel.length - 1); i++) {
+                    for (let j = 0; j < Math.min(this.crosswordWidth, this.temporaryModel[0].length - 1); j++) {
+                        this.crosswordModel[i][j] = this.temporaryModel[i][j];
+                    }
+                }
+                this.temporaryModel = deepClone(this.crosswordModel);
+            },
+            startDrawing(coords) {
+                this.drawingStart = coords;
+                this.drawWord(coords);
+            },
+            drawWord(coords) {
+                if (this.drawingStart) {
+                    this.temporaryModel = deepClone(this.crosswordModel);
+                    const fromRow = Math.min(this.drawingStart[0], coords[0]);
+                    const toRow = Math.max(this.drawingStart[0], coords[0]);
+                    const fromCol = Math.min(this.drawingStart[1], coords[1]);
+                    const toCol = Math.max(this.drawingStart[1], coords[1]);
+                    if (fromRow === toRow) { // horizontal word
+                        for (let i = fromCol; i <= toCol; i++) {
+                            this.temporaryModel[fromRow][i] = this.drawMode;
+                        }
+                    } else if (fromCol === toCol) { // verticalWord
+                        for (let i = fromRow; i <= toRow; i++) {
+                            this.temporaryModel[i][fromCol] = this.drawMode;
+                        }
+                    }
+                }
+            },
+            finishDrawing() {
+                this.crosswordModel = this.temporaryModel;
+                this.drawingStart = undefined;
+            },
+        },
+    });
+</script>
+
+</body>
+</html>
