@@ -50,11 +50,11 @@
         Jolka Solver
     </h1>
 
-    <b-steps
-            @input="solve()"
-            v-model="activeStep"
-            :animated="true"
-            :has-navigation="false">
+    <b-steps mobile-mode="compact"
+             @input="solve()"
+             v-model="activeStep"
+             :animated="true"
+             :has-navigation="false">
         <b-step-item step="1" label="Design crossword" :clickable="true">
             <div v-if="activeStep == 0">
                 <h1 class="title has-text-centered">Design crossword</h1>
@@ -176,7 +176,9 @@
     </b-steps>
 
     <div class="has-text-centered">
-        <b-button v-clipboard:copy="getCrosswordRepresentation()">Copy crossword to clipboard</b-button>
+        <b-button v-clipboard:copy="getCrosswordRepresentation()" v-clipboard:success="copiedSuccess">Copy crossword to
+            clipboard
+        </b-button>
         <b-button @click="pasteCrossword()">Init crossword from copied model</b-button>
         <b-button @click="restart()">Start new crossing</b-button>
     </div>
@@ -270,8 +272,8 @@
             updateCrosswordModel() {
                 const newCrosswordModel = new Array(this.crosswordHeight).fill(0).map(() => new Array(this.crosswordWidth).fill(0));
                 this.crosswordModel = newCrosswordModel;
-                for (let i = 0; i < Math.min(this.crosswordHeight, this.temporaryModel.length - 1); i++) {
-                    for (let j = 0; j < Math.min(this.crosswordWidth, this.temporaryModel[0].length - 1); j++) {
+                for (let i = 0; i < Math.min(this.crosswordHeight, this.temporaryModel.length); i++) {
+                    for (let j = 0; j < Math.min(this.crosswordWidth, this.temporaryModel[0].length); j++) {
                         this.crosswordModel[i][j] = this.temporaryModel[i][j];
                     }
                 }
@@ -379,7 +381,6 @@
                 this.solve();
             },
             solve() {
-                console.log('solve');
                 console.time('solve');
                 if (this.words.length && this.placesInCrossing.length > 1) {
                     this.saveInLocalStorage();
@@ -387,7 +388,7 @@
                     let sortedWords = deepClone(this.words).sort((w1, w2) => (placesByLength[w1.alternatives[0].length] || 100) - (placesByLength[w2.alternatives[0].length] || 100));
                     sortedWords = sortedWords.sort((w1, w2) => (w1.notSure ? 1 : 0) - (w2.notSure ? 1 : 0));
                     // const wordsByLength = this.words.sort((w1, w2) => w2.alternatives[0].length - w1.alternatives[0].length);
-                    console.log(sortedWords.map(word => word.alternatives[0]));
+                    // console.log(sortedWords.map(word => word.alternatives[0]));
                     let solutionCounter = 0;
                     let currentModels = [deepClone(this.crosswordModel)];
                     currentModels[0].words = [];
@@ -517,6 +518,13 @@
             },
             existsInSolution(alternatives) {
                 return alternatives.filter(a => this.solutions[this.currentSolution].words.indexOf(a) >= 0).length > 0;
+            },
+            copiedSuccess() {
+                this.$buefy.toast.open({
+                    message: 'Copied!',
+                    type: 'is-success',
+                    position: 'is-bottom',
+                });
             },
         },
         computed: {
