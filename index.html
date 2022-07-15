@@ -479,7 +479,7 @@
 
                 let wordCount = 0;
                 try {
-                    // debugger;
+                    debugger;
                     for (let iteration = 0; iteration < 100; iteration++) {
                         currentModels.forEach(m => m.untouched = true);
                         for (const word of sortedWords) {
@@ -525,7 +525,7 @@
                                 console.log('after dedup', currentModels.length);
                                 // currentModels = nextWordModels;
                             }
-                            if (currentModels[0].length === this.words.length) {
+                            if (currentModels[0].words.length === this.words.length) {
                                 break;
                             }
                             // console.log('word', ++wordCount);
@@ -582,7 +582,8 @@
                     }
                     break;
                 }
-                console.log(finalModels.sort((m1, m2) => m2.words.length - m1.words.length));
+                finalModels.sort((m1, m2) => m2.words.length - m1.words.length);
+                this.solutions = [finalModels[0]];
                 // console.log(startModels);
 
                 // let theWord = sortedWords[0];
