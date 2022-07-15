@@ -143,6 +143,12 @@
                                         {{ word.definition }}
                                     </a>
                                     <a @click="editDefinition(word)" v-else class="is-size-7"><em>no definition</em></a>
+                                    <b-tooltip label="Not sure">
+                                        <b-button size="is-small" :type="word.notSure ? 'is-warning' : ''" class="ml-2"
+                                                  @click="changeNotSure(word)">
+                                            <b-icon icon="question" pack="fas"></b-icon>
+                                        </b-button>
+                                    </b-tooltip>
                                     <button class="delete ml-2" @click="deleteWord(word)"></button>
                                 </div>
                             </div>
@@ -368,20 +374,25 @@
                 this.words.splice(this.words.indexOf(word), 1);
                 this.solve();
             },
+            changeNotSure(word) {
+                this.$set(word, 'notSure', !word.notSure);
+                this.solve();
+            },
             solve() {
                 console.log('solve');
                 console.time('solve');
                 if (this.words.length && this.placesInCrossing.length > 1) {
                     this.saveInLocalStorage();
                     const placesByLength = this.placesByLength;
-                    const wordsByLength = this.words.sort((w1, w2) => (placesByLength[w1.alternatives[0].length] || 100) - (placesByLength[w2.alternatives[0].length] || 100));
+                    let sortedWords = deepClone(this.words).sort((w1, w2) => (placesByLength[w1.alternatives[0].length] || 100) - (placesByLength[w2.alternatives[0].length] || 100));
+                    sortedWords = sortedWords.sort((w1, w2) => (w1.notSure ? 1 : 0) - (w2.notSure ? 1 : 0));
                     // const wordsByLength = this.words.sort((w1, w2) => w2.alternatives[0].length - w1.alternatives[0].length);
-                    console.log(wordsByLength);
+                    console.log(sortedWords.map(word => word.alternatives[0]));
                     let solutionCounter = 0;
                     let currentModels = [deepClone(this.crosswordModel)];
                     currentModels[0].words = [];
                     try {
-                        for (const word of wordsByLength) {
+                        for (const word of sortedWords) {
                             const nextWordModels = [];
                             const alternatives = word.alternatives;
                             for (const alternative of alternatives) {
@@ -400,6 +411,9 @@
                                         }
                                     }
                                 }
+                            }
+                            if (word.notSure) {
+                                currentModels.forEach(model => nextWordModels.push(model));
                             }
                             if (nextWordModels.length) {
                                 currentModels = nextWordModels;
