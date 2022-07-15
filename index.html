@@ -51,7 +51,6 @@
     </h1>
 
     <b-steps mobile-mode="compact"
-             @input="solve()"
              v-model="activeStep"
              :animated="true"
              :has-navigation="false">
@@ -106,7 +105,10 @@
                 <crossword-preview :model="markedModel || crosswordModel"
                                    @clicked="markLetter($event.row, $event.col)"
                                    :solution="visibleSolution"></crossword-preview>
-                <div class="has-text-centered mt-2" v-if="words.length > 0 && !solving">
+                <div class="has-text-centered mt-2">
+                    <b-button type="is-primary" @click="solve(5000)">Solve!</b-button>
+                </div>
+                <div class="has-text-centered mt-2" v-if="words.length > 0 && !solving && visibleSolution">
                     <div class="mb-2">Used words: {{ visibleSolution.words.length }}</div>
                     <div v-if="solutions.length > 1">
                         <a @click="currentSolution = currentSolution - 1 < 0 ? solutions.length - 1 : currentSolution - 1">&laquo;</a>
@@ -211,8 +213,9 @@
             <div v-for="(col, $ci) in row" :key="'col' + $ri + $ci"
                  @click="$emit('clicked', {row: $ri, col: $ci})"
                  :class="['crossword-square', {'letter': model[$ri][$ci], 'has-background-success': model[$ri][$ci] && model[$ri][$ci] !== 1}]">
-              <span v-if="solution && solution[$ri][$ci] !== 1 && solution[$ri][$ci] !== 0">
-                {{ solution[$ri][$ci] }}
+              <span
+                  v-if="(solution && solution[$ri][$ci] !== 1 && solution[$ri][$ci] !== 0) || (model[$ri][$ci] && model[$ri][$ci] !== 1)">
+                {{ solution && solution[$ri][$ci] || model[$ri][$ci] }}
               </span>
             </div>
           </div>
@@ -345,7 +348,7 @@
                     });
                     if (this.words.length) {
                         this.activeStep = 1;
-                        this.solve(DEFAULT_ITERATIONS_LIMIT);
+                        this.saveInLocalStorage();
                     }
                     if (parsed.markedModel) {
                         this.markedModel = parsed.markedModel;
@@ -363,7 +366,7 @@
                 if (alternatives.length) {
                     const definition = newWord.definition?.trim() || '';
                     this.words.push({alternatives, definition});
-                    this.solve(DEFAULT_ITERATIONS_LIMIT);
+                    this.saveInLocalStorage();
                 }
             },
             wordExists(w) {
@@ -380,7 +383,7 @@
                     //     }
                     // }
                     word.alternatives = words;
-                    this.solve(DEFAULT_ITERATIONS_LIMIT);
+                    this.saveInLocalStorage();
                 } else if (fixed === '') {
                     this.deleteWord(word);
                 }
@@ -394,11 +397,11 @@
             },
             deleteWord(word) {
                 this.words.splice(this.words.indexOf(word), 1);
-                this.solve(DEFAULT_ITERATIONS_LIMIT);
+                this.saveInLocalStorage();
             },
             changeNotSure(word) {
                 this.$set(word, 'notSure', !word.notSure);
-                this.solve(DEFAULT_ITERATIONS_LIMIT);
+                this.saveInLocalStorage();
             },
             markLetter(row, col) {
                 if (!this.markedModel) {
@@ -413,7 +416,7 @@
                         this.$set(this.markedModel[row], col, letter.toUpperCase());
                     }
                 }
-                this.solve(DEFAULT_ITERATIONS_LIMIT);
+                this.saveInLocalStorage();
             },
             isLetter(value) {
                 return value !== 0 && value !== 1;
