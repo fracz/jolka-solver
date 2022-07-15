@@ -110,6 +110,9 @@
                 </div>
                 <div class="has-text-centered mt-2" v-if="words.length > 0 && !solving && visibleSolution">
                     <div class="mb-2">Used words: {{ visibleSolution.words.length }}</div>
+                    <div class="mb-2" v-if="visibleSolution.words.length < words.length">
+                        Not used words: {{ notUsedWords(visibleSolution) }}
+                    </div>
                     <div v-if="solutions.length > 1">
                         <a @click="currentSolution = currentSolution - 1 < 0 ? solutions.length - 1 : currentSolution - 1">&laquo;</a>
                         Solution: {{ currentSolution + 1 }} / {{ solutions.length }}{{ solutions.length > 100 ? '+' : ''
@@ -213,9 +216,9 @@
             <div v-for="(col, $ci) in row" :key="'col' + $ri + $ci"
                  @click="$emit('clicked', {row: $ri, col: $ci})"
                  :class="['crossword-square', {'letter': model[$ri][$ci], 'has-background-success': model[$ri][$ci] && model[$ri][$ci] !== 1}]">
-              <span
-                  v-if="(solution && solution[$ri][$ci] !== 1 && solution[$ri][$ci] !== 0) || (model[$ri][$ci] && model[$ri][$ci] !== 1)">
-                {{ solution && solution[$ri][$ci] || model[$ri][$ci] }}
+              <span v-if="model[$ri][$ci] && model[$ri][$ci] !== 1">{{ model[$ri][$ci] }}</span>
+              <span v-else-if="(solution && solution[$ri][$ci] !== 1 && solution[$ri][$ci] !== 0)">
+                {{ solution && solution[$ri][$ci] }}
               </span>
             </div>
           </div>
@@ -432,84 +435,77 @@
                     console.time('solve');
                     if (this.words.length > 1 && this.placesInCrossing.length > 1) {
                         this.saveInLocalStorage();
-                        this.solveV1(limit);
+
+                        const alternatives = {};
+                        const allWords = this.words.map(w => {
+                            w.alternatives.forEach(word => alternatives[word] = w.alternatives);
+                            return w.alternatives;
+                        }).flat();
+                        const sortedWords = allWords.sort((w1, w2) => {
+                            const w1Count = this.placesByLength[w1.length] || 1000;
+                            const w2Count = this.placesByLength[w2.length] || 1000;
+                            if (w1.notSure && !w2.notSure) {
+                                return 1;
+                            } else if (!w1.notSure && w2.notSure) {
+                                return -1;
+                            } else if (w1Count === w2Count) {
+                                return w2.length - w1.length;
+                            } else {
+                                return w1Count - w2Count;
+                            }
+                        });
+
+                        this.solveV1(limit, sortedWords, alternatives);
                     }
                     console.timeEnd('solve');
                     this.solving = false;
                 }, 100);
             },
-            solveV1(limit) {
-                const placesByLength = this.placesByLength;
-                const sortedWords = deepClone(this.words).sort((w1, w2) => {
-                    const w1Count = placesByLength[w1.alternatives[0].length] || 100;
-                    const w2Count = placesByLength[w2.alternatives[0].length] || 100;
-                    if (w1.notSure && !w2.notSure) {
-                        return 1;
-                    } else if (!w1.notSure && w2.notSure) {
-                        return -1;
-                    } else if (w1Count === w2Count) {
-                        const diff = w2.alternatives[0].length - w1.alternatives[0].length;
-                        return diff || Math.random() - .5;
-                    } else {
-                        return w1Count - w2Count;
-                    }
-
-                });
-                console.log(sortedWords.map(word => word.alternatives[0]));
+            solveV1(limit, sortedWords, alternatives) {
                 let solutionCounter = 0;
                 let currentModels = [];
 
-                // currentModels[0].words = [];
-
                 const emptyCrossword = deepClone(this.markedModel || this.crosswordModel);
                 for (let i = 0; i < 2; i++) {
-                    for (const alternative of sortedWords[i].alternatives) {
-                        const possiblePlaces = this.placesInCrossing.filter((place) => place.length === alternative.length);
-                        for (let possiblePlace of possiblePlaces) {
-                            try {
-                                const newModel = this.writeWord(alternative, possiblePlace, deepClone(emptyCrossword), false);
-                                currentModels.push(newModel);
-                            } catch (e) {
-                            }
+                    const possiblePlaces = this.placesInCrossing.filter((place) => place.length === sortedWords[i].length);
+                    for (let possiblePlace of possiblePlaces) {
+                        try {
+                            const newModel = this.writeWord(sortedWords[i], possiblePlace, deepClone(emptyCrossword), false);
+                            currentModels.push(newModel);
+                        } catch (e) {
                         }
                     }
                 }
 
-                // console.log(currentModels[0].words);
-
-                let wordCount = 0;
                 try {
                     debugger;
                     for (let iteration = 0; iteration < 100; iteration++) {
                         currentModels.forEach(m => m.untouched = true);
                         for (const word of sortedWords) {
                             const nextWordModels = [];
-                            const alternatives = word.alternatives;
-                            for (const alternative of alternatives) {
-                                console.log(alternative);
-                                const possiblePlaces = this.placesInCrossing.filter((place) => place.length === alternative.length);
-                                for (const model of currentModels) {
-                                    const wordAlreadyAdded = word.alternatives.filter(w => model.words.includes(w)).length > 0;
-                                    let wordAdded = false;
-                                    if (!wordAlreadyAdded) {
-                                        for (let possiblePlace of possiblePlaces) {
-                                            try {
-                                                const newModel = this.writeWord(alternative, possiblePlace, deepClone(model));
-                                                // newModel.words = [...model.words, alternative];
-                                                nextWordModels.push(newModel);
-                                                wordAdded = true;
-                                            } catch (error) {
-                                                // ignore this model - impossible
-                                            }
-                                            if (solutionCounter++ > limit) {
-                                                currentModels = nextWordModels.length ? nextWordModels : currentModels;
-                                                throw new Error('too complicated');
-                                            }
+                            const possiblePlaces = this.placesInCrossing.filter((place) => place.length === word.length);
+                            for (const model of currentModels) {
+                                const wordAlreadyAdded = alternatives[word].filter(w => model.words.includes(w)).length > 0;
+                                let wordAdded = false;
+                                if (!wordAlreadyAdded) {
+                                    for (let possiblePlace of possiblePlaces) {
+                                        try {
+                                            const newModel = this.writeWord(word, possiblePlace, deepClone(model));
+                                            // newModel.words = [...model.words, alternative];
+                                            nextWordModels.push(newModel);
+                                            wordAdded = true;
+                                        } catch (error) {
+                                            console.log(error);
+                                            // ignore this model - impossible
+                                        }
+                                        if (solutionCounter++ > limit) {
+                                            currentModels = nextWordModels.length ? nextWordModels : currentModels;
+                                            throw new Error('too complicated');
                                         }
                                     }
-                                    // if (!wordAdded) {
-                                    //     nextWordModels.push(model);
-                                    // }
+                                }
+                                if (!wordAdded) {
+                                    nextWordModels.push(model);
                                 }
                             }
                             // if (word.notSure) {
@@ -748,6 +744,13 @@
                     type: 'is-success',
                     position: 'is-bottom',
                 });
+            },
+            notUsedWords(solution) {
+                return this.words
+                    .filter((word) => word.alternatives.filter(alt => solution.words.includes(alt)).length === 0)
+                    .map(word => word.alternatives)
+                    .flat()
+                    .join(', ');
             },
         },
         computed: {
