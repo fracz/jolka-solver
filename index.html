@@ -428,118 +428,125 @@
                     console.time('solve');
                     if (this.words.length > 1 && this.placesInCrossing.length > 1) {
                         this.saveInLocalStorage();
-                        const placesByLength = this.placesByLength;
-                        const sortedWords = deepClone(this.words).sort((w1, w2) => {
-                            const w1Count = placesByLength[w1.alternatives[0].length] || 100;
-                            const w2Count = placesByLength[w2.alternatives[0].length] || 100;
-                            if (w1.notSure && !w2.notSure) {
-                                return 1;
-                            } else if (!w1.notSure && w2.notSure) {
-                                return -1;
-                            } else if (w1Count === w2Count) {
-                                return w2.alternatives[0].length - w1.alternatives[0].length;
-                            } else {
-                                return w1Count - w2Count;
-                            }
-
-                        });
-                        console.log(sortedWords.map(word => word.alternatives[0]));
-                        let solutionCounter = 0;
-                        let currentModels = [];
-
-                        // currentModels[0].words = [];
-
-                        const emptyCrossword = deepClone(this.markedModel || this.crosswordModel);
-                        for (let i = 0; i < 2; i++) {
-                            for (const alternative of sortedWords[i].alternatives) {
-                                const possiblePlaces = this.placesInCrossing.filter((place) => place.length === alternative.length);
-                                for (let possiblePlace of possiblePlaces) {
-                                    try {
-                                        const newModel = this.writeWord(alternative, possiblePlace, deepClone(emptyCrossword), false);
-                                        currentModels.push(newModel);
-                                    } catch (e) {
-                                    }
-                                }
-                            }
-                        }
-
-                        // console.log(currentModels[0].words);
-
-                        let wordCount = 0;
-                        try {
-                            // debugger;
-                            for (let iteration = 0; iteration < 100; iteration++) {
-                                currentModels.forEach(m => m.untouched = true);
-                                for (const word of sortedWords) {
-                                    const nextWordModels = [];
-                                    const alternatives = word.alternatives;
-                                    for (const alternative of alternatives) {
-                                        console.log(alternative);
-                                        const possiblePlaces = this.placesInCrossing.filter((place) => place.length === alternative.length);
-                                        for (const model of currentModels) {
-                                            const wordAlreadyAdded = word.alternatives.filter(w => model.words.includes(w)).length > 0;
-                                            let wordAdded = false;
-                                            if (!wordAlreadyAdded) {
-                                                for (let possiblePlace of possiblePlaces) {
-                                                    try {
-                                                        const newModel = this.writeWord(alternative, possiblePlace, deepClone(model));
-                                                        // newModel.words = [...model.words, alternative];
-                                                        nextWordModels.push(newModel);
-                                                        wordAdded = true;
-                                                    } catch (error) {
-                                                        // ignore this model - impossible
-                                                    }
-                                                    if (solutionCounter++ > limit) {
-                                                        currentModels = nextWordModels.length ? nextWordModels : currentModels;
-                                                        throw new Error('too complicated');
-                                                    }
-                                                }
-                                            }
-                                            // if (!wordAdded) {
-                                            //     nextWordModels.push(model);
-                                            // }
-                                        }
-                                    }
-                                    // if (word.notSure) {
-                                    //     currentModels.forEach(model => nextWordModels.push(model));
-                                    // }
-                                    if (nextWordModels.length) {
-                                        const deduplicator = {};
-                                        nextWordModels.forEach(m => deduplicator[JSON.stringify(m)] = m);
-                                        console.log('before dedup', nextWordModels.length);
-                                        currentModels = Object.values(deduplicator).sort((m1, m2) => m2.words.length - m1.words.length);
-                                        const maxLength = currentModels[0].words.length;
-                                        currentModels = currentModels.filter(m => m.words.length > maxLength - 5);
-                                        console.log('after dedup', currentModels.length);
-                                        // currentModels = nextWordModels;
-                                    }
-                                    if (currentModels[0].length === this.words.length) {
-                                        break;
-                                    }
-                                    // console.log('word', ++wordCount);
-                                    // console.log(nextWordModels.length);
-                                }
-                                console.log(currentModels.length);
-                                const changedModels = currentModels.filter(m => !m.untouched);
-                                if (changedModels.length === 0 || currentModels[0].words.length === this.words.length) {
-                                    break;
-                                }
-                                currentModels = changedModels;
-                                console.log(solutionCounter, currentModels.length);
-                            }
-                            this.currentSolution = 0;
-                            this.solutions = currentModels.slice(0, 101);
-                            this.solutionCounter = solutionCounter;
-                        } catch (e) {
-                            this.sampleSolution = currentModels[0];
-                            this.solutions = [];
-                            this.currentSolution = 0;
-                            this.solutionCounter = solutionCounter;
-                        }
+                        this.solveV1(limit);
                     }
                     console.timeEnd('solve');
                     this.solving = false;
                 }, 100);
+            },
+            solveV1(limit) {
+                const placesByLength = this.placesByLength;
+                const sortedWords = deepClone(this.words).sort((w1, w2) => {
+                    const w1Count = placesByLength[w1.alternatives[0].length] || 100;
+                    const w2Count = placesByLength[w2.alternatives[0].length] || 100;
+                    if (w1.notSure && !w2.notSure) {
+                        return 1;
+                    } else if (!w1.notSure && w2.notSure) {
+                        return -1;
+                    } else if (w1Count === w2Count) {
+                        return w2.alternatives[0].length - w1.alternatives[0].length;
+                    } else {
+                        return w1Count - w2Count;
+                    }
+
+                });
+                console.log(sortedWords.map(word => word.alternatives[0]));
+                let solutionCounter = 0;
+                let currentModels = [];
+
+                // currentModels[0].words = [];
+
+                const emptyCrossword = deepClone(this.markedModel || this.crosswordModel);
+                for (let i = 0; i < 2; i++) {
+                    for (const alternative of sortedWords[i].alternatives) {
+                        const possiblePlaces = this.placesInCrossing.filter((place) => place.length === alternative.length);
+                        for (let possiblePlace of possiblePlaces) {
+                            try {
+                                const newModel = this.writeWord(alternative, possiblePlace, deepClone(emptyCrossword), false);
+                                currentModels.push(newModel);
+                            } catch (e) {
+                            }
+                        }
+                    }
+                }
+
+                // console.log(currentModels[0].words);
+
+                let wordCount = 0;
+                try {
+                    // debugger;
+                    for (let iteration = 0; iteration < 100; iteration++) {
+                        currentModels.forEach(m => m.untouched = true);
+                        for (const word of sortedWords) {
+                            const nextWordModels = [];
+                            const alternatives = word.alternatives;
+                            for (const alternative of alternatives) {
+                                console.log(alternative);
+                                const possiblePlaces = this.placesInCrossing.filter((place) => place.length === alternative.length);
+                                for (const model of currentModels) {
+                                    const wordAlreadyAdded = word.alternatives.filter(w => model.words.includes(w)).length > 0;
+                                    let wordAdded = false;
+                                    if (!wordAlreadyAdded) {
+                                        for (let possiblePlace of possiblePlaces) {
+                                            try {
+                                                const newModel = this.writeWord(alternative, possiblePlace, deepClone(model));
+                                                // newModel.words = [...model.words, alternative];
+                                                nextWordModels.push(newModel);
+                                                wordAdded = true;
+                                            } catch (error) {
+                                                // ignore this model - impossible
+                                            }
+                                            if (solutionCounter++ > limit) {
+                                                currentModels = nextWordModels.length ? nextWordModels : currentModels;
+                                                throw new Error('too complicated');
+                                            }
+                                        }
+                                    }
+                                    // if (!wordAdded) {
+                                    //     nextWordModels.push(model);
+                                    // }
+                                }
+                            }
+                            // if (word.notSure) {
+                            //     currentModels.forEach(model => nextWordModels.push(model));
+                            // }
+                            if (nextWordModels.length) {
+                                const deduplicator = {};
+                                nextWordModels.forEach(m => deduplicator[JSON.stringify(m)] = m);
+                                console.log('before dedup', nextWordModels.length);
+                                currentModels = Object.values(deduplicator).sort((m1, m2) => m2.words.length - m1.words.length);
+                                const maxLength = currentModels[0].words.length;
+                                currentModels = currentModels.filter(m => m.words.length > maxLength - 5);
+                                console.log('after dedup', currentModels.length);
+                                // currentModels = nextWordModels;
+                            }
+                            if (currentModels[0].length === this.words.length) {
+                                break;
+                            }
+                            // console.log('word', ++wordCount);
+                            // console.log(nextWordModels.length);
+                        }
+                        console.log(currentModels.length);
+                        const changedModels = currentModels.filter(m => !m.untouched);
+                        if (changedModels.length === 0 || currentModels[0].words.length === this.words.length) {
+                            break;
+                        }
+                        currentModels = changedModels;
+                        console.log(solutionCounter, currentModels.length);
+                    }
+                    this.currentSolution = 0;
+                    this.solutions = currentModels.slice(0, 101);
+                    this.solutionCounter = solutionCounter;
+                } catch (e) {
+                    this.sampleSolution = currentModels[0];
+                    this.solutions = [];
+                    this.currentSolution = 0;
+                    this.solutionCounter = solutionCounter;
+                }
+            },
+            solveV2(limit) {
+                const allWords = this.words.map(w => w.alternatives).flat();
+                console.log(allWords);
             },
             writeWord(word, place, model, mustHitAnotherWord = true) {
                 let hitAnother = false;
