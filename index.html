@@ -331,8 +331,12 @@
                 this.saveInLocalStorage();
             },
             pasteCrossword() {
-                const pasted = prompt('Crossword model you have copied before');
-                this.loadCrossword(pasted);
+                if (confirm('All changes will be lost unless you saved it!')) {
+                    const pasted = prompt('Crossword model you have copied before');
+                    this.loadCrossword(pasted);
+                    this.saveInLocalStorage();
+                    window.location.href = window.location.toString();
+                }
             },
             loadCrossword(crossword) {
                 const parsed = JSON.parse(crossword);
