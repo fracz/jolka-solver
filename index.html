@@ -376,6 +376,7 @@
                     this.words.push({alternatives, definition});
                     this.saveInLocalStorage();
                 }
+                this.solutions = [];
             },
             wordExists(w) {
                 return this.words.filter(word => word.alternatives.indexOf(w) >= 0).length > 0;
@@ -395,6 +396,7 @@
                 } else if (fixed === '') {
                     this.deleteWord(word);
                 }
+                this.solutions = [];
             },
             splitWord(word) {
                 return (word || '').trim().toUpperCase().split('/').map(w => w.trim()).filter(w => w);
@@ -406,6 +408,7 @@
             deleteWord(word) {
                 this.words.splice(this.words.indexOf(word), 1);
                 this.saveInLocalStorage();
+                this.solutions = [];
             },
             changeNotSure(word) {
                 this.$set(word, 'notSure', !word.notSure);
