@@ -338,6 +338,9 @@
                 const parsed = JSON.parse(crossword);
                 if (parsed && parsed.crosswordModel) {
                     this.crosswordModel = parsed.crosswordModel;
+                    if (typeof this.crosswordModel[0] === 'string') {
+                        this.crosswordModel = this.crosswordModel.map(row => row.split(''));
+                    }
                     this.temporaryModel = deepClone(this.crosswordModel);
                     this.crosswordWidth = this.crosswordModel[0].length;
                     this.crosswordHeight = this.crosswordModel.length;
@@ -683,7 +686,7 @@
             getCrosswordRepresentation() {
                 console.log('crosswordRepresentation');
                 return JSON.stringify({
-                    crosswordModel: this.crosswordModel,
+                    crosswordModel: this.crosswordModel.map(row => row.join('')),
                     markedModel: this.markedModel,
                     words: this.words,
                 });
