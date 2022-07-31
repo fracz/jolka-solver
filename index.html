@@ -478,7 +478,7 @@
                 }
 
                 try {
-                    debugger;
+                    // debugger;
                     for (let iteration = 0; iteration < 100; iteration++) {
                         currentModels.forEach(m => m.untouched = true);
                         for (const word of sortedWords) {
@@ -595,7 +595,7 @@
                     let newModels = [];
                     for (const possiblePlace of possiblePlaces) {
                         try {
-                            debugger;
+                            // debugger;
                             const newModel = this.writeWord(word, possiblePlace, deepClone(model));
                             const deepModels = this.putLongestWord(newModel, availableWords.filter(w => !this.alternatives[word].includes(w)));
                             newModels = [...newModels, ...deepModels];
