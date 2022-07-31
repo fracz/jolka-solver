@@ -1,0 +1,1661 @@
+{
+  "crosswordModel": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "markedModel": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      "R",
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      "M",
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      "Ł",
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      "P",
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      "Ż",
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      "G",
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      "A",
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "words": [
+    {
+      "alternatives": [
+        "PAT"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PINOKIO",
+        "PAJAC"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "GARDŁO",
+        "KRTAŃ"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "OŚĆ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "POCISK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "MATEJKO"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "SNOB",
+        "POZER"
+      ],
+      "definition": "bufon, szpaner",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "KARNISZ",
+        "ŻABKA"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "PETKA"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "GUZIK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PANAMA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "FARSZ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "HUMOR",
+        "ŻART"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "UCHA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "NIETOPERZ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ZDROWIE",
+        "FORMA"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "MARYSIA"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "CZEK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "SOWA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "NADWAGA"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "AR"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "SZCZOTECZKA"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "LUSTRO"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ULE"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "CHATA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "CEBULA",
+        "CZOSNEK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "TRAVELBUG"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "SCENA",
+        "SCENKA",
+        "ODSŁONA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "MAKARON"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ZŁA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KARA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "TERMY"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ŚPIEWAK"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "CHMIEL"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PAN",
+        "PANNA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "RYS"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "RYŻ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "OBRUS",
+        "CERATA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "TOGA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "DYSTANS"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PORTUGALIA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KOPARKA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ZBIR",
+        "OPRYSZEK",
+        "RABUŚ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "GALARETKA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KALAFIOR"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "BRAMA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "NASYP"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "RETRO"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PODWALINA",
+        "OPOKA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ZŁOM"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "GODZINA",
+        "SEKUNDA",
+        "MINUTA"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "WRONA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "JEMIOŁA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "OSA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ŁATA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "NOC"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ŻAK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "NOS"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ZK"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "POR"
+      ],
+      "definition": "",
+      "notSure": false
+    },
+    {
+      "alternatives": [
+        "CZŁOWIEK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KWAŚNICA",
+        "KAPUŚNIAK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "UCHO"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ŻEBRO"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ETAT"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "REŻIM"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "OSKAR"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "MICKIEWICZ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "APUZ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KOTY"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "OGR"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KATAR"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PIÓROPUSZ"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "CZĘSTOCHOWA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "RAK"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PSZCZOŁA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KREDA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "TESTAMENT"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "WIEKO"
+      ],
+      "definition": ""
+    }
+  ]
+}

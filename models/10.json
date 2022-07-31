@@ -1,0 +1,477 @@
+{
+  "crosswordModel": [
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  ],
+  "words": [
+    {
+      "definition": "",
+      "alternatives": [
+        "KOPALNIA"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "KRZEMIEŃ"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "GEOLOGIA"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "KAPUCYN"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "WĘGIEL"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "KRAKÓW",
+        "GNIEZNO"
+      ]
+    },
+    {
+      "alternatives": [
+        "HETMAN",
+        "GONIEC"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "MRÓWKA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "SKRZAT"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "PROROK",
+        "WRÓŻKA",
+        "JASNOWIDZ"
+      ],
+      "definition": ""
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "ROSÓŁ",
+        "POMIDOROWA"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "BURAK"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "KOREK"
+      ]
+    },
+    {
+      "definition": "przybija koniom podkowy",
+      "alternatives": [
+        "KOWAL",
+        "HUFNAL",
+        "UFNAL"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "KRATA",
+        "KRATY"
+      ]
+    },
+    {
+      "alternatives": [
+        "DOMEK",
+        "PASJANS"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "EKIPA"
+      ],
+      "definition": ""
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "POLE"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "OLEJ"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "BACA",
+        "HARNAŚ"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "ZUCH"
+      ]
+    },
+    {
+      "definition": "",
+      "alternatives": [
+        "GAJA"
+      ]
+    },
+    {
+      "alternatives": [
+        "NOGI"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "LEON"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "AUT",
+        "OUT"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ARA"
+      ],
+      "definition": ""
+    }
+  ]
+}
