@@ -1,0 +1,252 @@
+{
+  "crosswordModel": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "words": [
+    {
+      "alternatives": [
+        "EWA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "OPERA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "HARRY"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ERA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "HISTORIA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ROTTERDAM"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "CYKL"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "KATANA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "LETTERBOX"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "DOBRO"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ONA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "AR"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "SATELITA"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "CEL"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "MAT"
+      ],
+      "definition": ""
+    },
+    {
+      "alternatives": [
+        "ALBATROS"
+      ],
+      "definition": ""
+    }
+  ]
+}
